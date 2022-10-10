@@ -31,19 +31,9 @@ describe("GET/api/topics", () => {
         });
       });
   });
+});
 
-  test("200: returns the correct object key - value pairs", () => {
-    return request(app)
-      .get("/api/topics")
-      .expect(200)
-      .then(({ body }) => {
-        const { topics } = body;
-        expect(topics[0]).toEqual({
-          slug: "mitch",
-          description: "The man, the Mitch, the legend",
-        });
-      });
-  });
+describe("404:Invalid Route Endpoint", () => {
   test("404:responds with error when passed a route that doesnot exist", () => {
     return request(app)
       .get("/api/not-a-route")
