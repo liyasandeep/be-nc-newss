@@ -1,7 +1,6 @@
 const db = require("../db/connection");
 
 const selectArticleById = (article_id) => {
-  console.log("in model");
   let queryStr = `SELECT * FROM articles WHERE articles.article_id = $1; `;
 
   return db.query(queryStr, [article_id]).then(({ rows: article }) => {
