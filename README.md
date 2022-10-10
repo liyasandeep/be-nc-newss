@@ -6,6 +6,43 @@ We will be building an API for the purpose of accessing application data program
 
 Your database will be PSQL, and you will interact with it using [node-postgres](https://node-postgres.com/).
 
+## Step 1 Set up your own repo
+
+Clone this repo from https://github.com/northcoders/be-nc-news
+
+In terminal Do
+
+git clone https://github.com/northcoders/be-nc-news
+
+change directory to be-nc-news
+
+cd be-nc-news
+
+In Github make your own public repository for your project
+
+Do not initialise the project with a readme, .gitignore or license.
+
+From your cloned local version of the project you'll want to push your code to your new repository in github using the following commands:
+
+git remote set-url origin YOUR_NEW_REPO_URL_HERE # This will set remote to our new repo url and prevent from pushing to northcoders repo
+git branch -M main # create main branch in new repo
+git push -u origin main # pushes to main branch (Branch 'main' set up to track remote branch 'main' from 'origin')
+
+## Step 2 : Setting up the Project
+
+We'll have two databases in this project. One for real looking dev data and another for simpler test data.
+
+You will need to create two .env files for your project: .env.test and .env.development. Into each, add PGDATABASE=<database_name_here>, with the correct database name for that environment (see /db/setup.sql for the database names). Double check that these .env files are .gitignored.
+
+You have also been provided with a db folder with some data, a setup.sql file and a seeds folder. You should also take a minute to familiarise yourself with the npm scripts you have been provided.
+
+The job of index.js in each the data folders is to export out all the data from that folder, currently stored in separate files. This is so that, when you need access to the data elsewhere, you can write one convenient require statement - to the index file, rather than having to require each file individually. Think of it like a index of a book - a place to refer to! Make sure the index file exports an object with values of the data from that folder with the keys:
+
+topicData
+articleData
+userData
+commentData
+
 ## Kanban
 
 ### Link to your Trello Board here: https://trello.com/b/7yiHe1nI
