@@ -8,4 +8,5 @@ const getTopics = (req, res, next) => {
       next(err);
     });
 };
+
 module.exports = getTopics;
