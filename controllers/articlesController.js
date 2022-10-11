@@ -1,6 +1,7 @@
 const {
   selectArticleById,
   updateArticleById,
+  selectArticles,
 } = require("../models/articlesModel");
 
 const getArticleById = (req, res, next) => {
@@ -27,4 +28,14 @@ const patchArticleById = (req, res, next) => {
       next(err);
     });
 };
-module.exports = { getArticleById, patchArticleById };
+const getArticles = (req, res, next) => {
+  selectArticles()
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+module.exports = { getArticleById, patchArticleById, getArticles };
