@@ -37,9 +37,10 @@ const updateArticleById = (article_id, inc_votes) => {
 };
 
 const selectArticles = (topic) => {
-  console.log(topic);
   let queryStr = `SELECT articles.article_id, articles.author,title,topic,articles.created_at,articles.votes,COUNT(comments.article_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id `;
+
   let queryValues = [];
+
   if (topic) {
     queryValues.push(topic);
 
@@ -48,15 +49,8 @@ const selectArticles = (topic) => {
 
   queryStr += `GROUP BY articles.article_id ORDER BY articles.created_at DESC`;
 
-  if (topic === undefined) {
-    return db.query(queryStr).then(({ rows: articles }) => {
-      return articles;
-    });
-  } else {
-    return db.query(queryStr, queryValues).then(({ rows: articles }) => {
-      console.log(articles);
-      return articles;
-    });
-  }
+  return db.query(queryStr, queryValues).then(({ rows: articles }) => {
+    return articles;
+  });
 };
 module.exports = { selectArticleById, updateArticleById, selectArticles };

@@ -4,6 +4,8 @@ const {
   selectArticles,
 } = require("../models/articlesModel");
 
+const { selectTopicByName } = require("../models/topicsModel");
+
 const getArticleById = (req, res, next) => {
   const { article_id } = req.params;
 
@@ -30,13 +32,15 @@ const patchArticleById = (req, res, next) => {
 };
 const getArticles = (req, res, next) => {
   const { topic } = req.query;
-  selectArticles(topic)
-    .then((articles) => {
-      if (articles.length !== 0) {
-        res.status(200).send({ articles });
-      } else {
-        res.status(400).send({ message: "Invalid query type" });
-      }
+
+  const promises = [selectArticles(topic)];
+  if (topic) {
+    promises.push(selectTopicByName(topic));
+  }
+
+  Promise.all(promises)
+    .then((promises) => {
+      res.status(200).send({ articles: promises[0] });
     })
     .catch((err) => {
       next(err);

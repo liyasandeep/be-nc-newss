@@ -33,7 +33,7 @@ describe("GET/api/topics", () => {
   });
 });
 
-describe.only("GET/api/articles", () => {
+describe("GET/api/articles", () => {
   test("200:responds with an array of articles object", () => {
     return request(app)
       .get("/api/articles")
@@ -79,25 +79,24 @@ describe.only("GET/api/articles", () => {
       });
   });
 
-  test("400:responds with error when passed an invalid topic query", () => {
+  test("404:responds with error when passed a topic of valid type but not present in database", () => {
     return request(app)
-      .get("/api/articles?topic=1")
-      .expect(400)
+      .get("/api/articles?topic=abc")
+      .expect(404)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Invalid query type");
+        expect(message).toBe("Topic not found");
       });
   });
-
-  // test("404:responds with error when passed a topic of valid type but not present in database", () => {
-  //   return request(app)
-  //     .get("/api/articles?topic=abc")
-  //     .expect(404)
-  //     .then(({ body }) => {
-  //       const { message } = body;
-  //       expect(message).toBe("Topic does not exist");
-  //     });
-  // });
+  test("200:responds with an empty array when passed a topic present in database but has no associated article", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toHaveLength(0);
+      });
+  });
 });
 
 describe("GET/api/articles/:article_id", () => {
