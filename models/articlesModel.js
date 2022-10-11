@@ -16,10 +16,11 @@ const selectArticleById = (article_id) => {
 };
 
 const updateArticleById = (article_id, inc_votes) => {
-  let queryStr = `UPDATE articles SET  votes = votes + $2 WHERE article_id = $1 RETURNING *; `;
   if (inc_votes === undefined) {
     return Promise.reject({ status: 400, message: "Invalid key" });
   } else {
+    let queryStr = `UPDATE articles SET  votes = votes + $2 WHERE article_id = $1 RETURNING *; `;
+
     return db
       .query(queryStr, [article_id, inc_votes])
       .then(({ rows: article }) => {
