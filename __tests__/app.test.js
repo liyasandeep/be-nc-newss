@@ -75,6 +75,7 @@ describe("GET/api/articles/:article_id", () => {
             body: expect.any(String),
             created_at: expect.any(String),
             votes: expect.any(Number),
+            comment_count: expect.any(Number),
           })
         );
         expect(article).toEqual({
@@ -85,6 +86,7 @@ describe("GET/api/articles/:article_id", () => {
           body: "I find this existence challenging",
           created_at: "2020-07-09T20:11:00.000Z",
           votes: 100,
+          comment_count: 11,
         });
       });
   });
