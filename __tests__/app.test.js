@@ -72,7 +72,7 @@ describe("GET/api/articles/:article_id", () => {
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Invalid ID type");
+        expect(message).toBe("Invalid type");
       });
   });
 
@@ -108,11 +108,93 @@ describe("GET/api/users", () => {
       });
   });
 });
+
+describe("PATCH/api/articles/:article_id", () => {
+  test("200:responds with the updated aricle,with the vote property being updated", () => {
+    return request(app)
+      .patch("/api/articles/3")
+      .expect(200)
+      .send({ inc_votes: 1 })
+      .then(({ body }) => {
+        const { article } = body;
+        expect(article).toBeInstanceOf(Object);
+        expect(article).toEqual(
+          expect.objectContaining({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+          })
+        );
+
+        expect(article.article_id).toBe(3);
+        expect(article.votes).toBe(1);
+      });
+  });
+
+  test("400:responds with error when passed with an id of incorrect type", () => {
+    return request(app)
+      .patch("/api/articles/not-an-id")
+      .expect(400)
+      .send({ inc_votes: 1 })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid type");
+      });
+  });
+
+  test("404:responds with error when passed an id not present in database", () => {
+    return request(app)
+      .patch("/api/articles/99999")
+      .expect(404)
+      .send({ inc_votes: 1 })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Article Id does not exist");
+      });
+  });
+  test("400:responds with error when passed object has invalid value type  like {inc_votes : 'abc'}", () => {
+    return request(app)
+      .patch("/api/articles/3")
+      .expect(400)
+      .send({ inc_votes: "abc" })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid type");
+      });
+  });
+
+  test("400:responds with error when passed object has invalid key like '{inc_vote : 4}'", () => {
+    return request(app)
+      .patch("/api/articles/3")
+      .expect(400)
+      .send({ inc_vote: 4 })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid key");
+      });
+  });
+});
+
 describe("404:Invalid Route Endpoint", () => {
   test("404:responds with error when passed a route that doesnot exist", () => {
     return request(app)
       .get("/api/not-a-route")
       .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid Route!");
+      });
+  });
+
+  test("PATCH 404:responds with error when passed a route that doesnot exist", () => {
+    return request(app)
+      .patch("/api/not-a-route/2")
+      .expect(404)
+      .send({ inc_votes: 2 })
       .then(({ body }) => {
         const { message } = body;
         expect(message).toBe("Invalid Route!");
