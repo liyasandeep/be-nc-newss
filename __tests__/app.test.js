@@ -33,30 +33,72 @@ describe("GET/api/topics", () => {
   });
 });
 
-// describe("GET/api/articles", () => {
-//   test("200:responds with an array of articles object", () => {
-//     return request(app)
-//       .get("/api/articles")
-//       .expect(200)
-//       .then(({ body }) => {
-//         const { articles } = body;
-//         expect(articles).toBeInstanceOf(Array);
-//         articles.forEach((article) => {
-//           expect(article).toEqual(
-//             expect.objectContaining({
-//               article_id: expect.any(Number),
-//               title: expect.any(String),
-//               topic: expect.any(String),
-//               author: expect.any(String),
-//               created_at: expect.any(String),
-//               votes: expect.any(Number),
-//               comment_count: expect.any(Number),
-//             })
-//           );
-//         });
-//       });
-//   });
-// });
+describe.only("GET/api/articles", () => {
+  test("200:responds with an array of articles object", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toBeInstanceOf(Array);
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+
+  test("200:articles are sorted by created_at in descending order by default", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("200:articles are filtered by the passed query 'topic'", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toHaveLength(11);
+        articles.forEach((article) => {
+          expect(article.topic).toBe("mitch");
+        });
+      });
+  });
+
+  test("400:responds with error when passed an invalid topic query", () => {
+    return request(app)
+      .get("/api/articles?topic=1")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid query type");
+      });
+  });
+
+  // test("404:responds with error when passed a topic of valid type but not present in database", () => {
+  //   return request(app)
+  //     .get("/api/articles?topic=abc")
+  //     .expect(404)
+  //     .then(({ body }) => {
+  //       const { message } = body;
+  //       expect(message).toBe("Topic does not exist");
+  //     });
+  // });
+});
 
 describe("GET/api/articles/:article_id", () => {
   test("200:responds with an article object with the specified article id ", () => {

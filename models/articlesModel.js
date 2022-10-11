@@ -36,18 +36,27 @@ const updateArticleById = (article_id, inc_votes) => {
   }
 };
 
-const selectArticles = () => {
-  let queryStr = `SELECT * FROM articles WHERE articles.article_id = $1; `;
+const selectArticles = (topic) => {
+  console.log(topic);
+  let queryStr = `SELECT articles.article_id, articles.author,title,topic,articles.created_at,articles.votes,COUNT(comments.article_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id `;
+  let queryValues = [];
+  if (topic) {
+    queryValues.push(topic);
 
-  return db.query(queryStr, [article_id]).then(({ rows: article }) => {
-    if (article.length === 1) {
-      return article[0];
-    } else {
-      return Promise.reject({
-        status: 404,
-        message: "Article Id does not exist",
-      });
-    }
-  });
+    queryStr += `WHERE topic = $1 `;
+  }
+
+  queryStr += `GROUP BY articles.article_id ORDER BY articles.created_at DESC`;
+
+  if (topic === undefined) {
+    return db.query(queryStr).then(({ rows: articles }) => {
+      return articles;
+    });
+  } else {
+    return db.query(queryStr, queryValues).then(({ rows: articles }) => {
+      console.log(articles);
+      return articles;
+    });
+  }
 };
-module.exports = { selectArticleById, updateArticleById };
+module.exports = { selectArticleById, updateArticleById, selectArticles };

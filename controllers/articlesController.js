@@ -29,9 +29,14 @@ const patchArticleById = (req, res, next) => {
     });
 };
 const getArticles = (req, res, next) => {
-  selectArticles()
+  const { topic } = req.query;
+  selectArticles(topic)
     .then((articles) => {
-      res.status(200).send({ articles });
+      if (articles.length !== 0) {
+        res.status(200).send({ articles });
+      } else {
+        res.status(400).send({ message: "Invalid query type" });
+      }
     })
     .catch((err) => {
       next(err);
