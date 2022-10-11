@@ -1,11 +1,13 @@
 const express = require("express");
 const getTopics = require("./controllers/topicsController");
 const getArticleById = require("./controllers/articlesController");
+const getUsers = require("./controllers/usersController.js");
 const app = express();
 
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
 
+app.get("/api/users", getUsers);
 app.all("*", (req, res) => {
   res.status(404).send({ message: "Invalid Route!" });
 });
