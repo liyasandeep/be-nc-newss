@@ -296,6 +296,62 @@ describe("PATCH/api/articles/:article_id", () => {
   });
 });
 
+describe.only("POST/api/articles/:article_id/comments", () => {
+  test("201:adds a comment to the article specified by article id and responds with the added comment", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .expect(201)
+      .send({ username: "rogersop", body: "new comment added" })
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+            author: expect.any(String),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+          })
+        );
+        expect(comment.article_id).toBe(2);
+        expect(comment.author).toBe("rogersop");
+        expect(comment.body).toBe("new comment added");
+      });
+  });
+  test("400:responds with error when article id is invalid", () => {
+    return request(app)
+      .post("/api/articles/not-an-id/comments")
+      .expect(400)
+      .send({ username: "rogersop", body: "new comment added" })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid type");
+      });
+  });
+  test("404:responds with error when passed an id not present in database", () => {
+    return request(app)
+      .post("/api/articles/99999/comments")
+      .expect(404)
+      .send({ username: "rogersop", body: "new comment added" })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Article Id does not exist");
+      });
+  });
+
+  test("404:responds with error when passed username not in database", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .expect(404)
+      .send({ username: "not-a-username-in-db", body: "new comment added" })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Username not found");
+      });
+  });
+});
+
 describe("404:Invalid Route Endpoint", () => {
   test("404:responds with error when passed a route that doesnot exist", () => {
     return request(app)
@@ -312,6 +368,17 @@ describe("404:Invalid Route Endpoint", () => {
       .patch("/api/not-a-route/2")
       .expect(404)
       .send({ inc_votes: 2 })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid Route!");
+      });
+  });
+
+  test("POST 404:responds with error when passed a route that doesnot exist", () => {
+    return request(app)
+      .post("/api/not-a-route/2/comments")
+      .expect(404)
+      .send({ username: "rogersop", body: "new comment added" })
       .then(({ body }) => {
         const { message } = body;
         expect(message).toBe("Invalid Route!");

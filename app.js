@@ -6,7 +6,11 @@ const {
   getArticles,
 } = require("./controllers/articlesController");
 const getUsers = require("./controllers/usersController.js");
-const getCommentsByArticleId = require("./controllers/commentsController.js");
+const {
+  getCommentsByArticleId,
+  postCommentByArticleId,
+} = require("./controllers/commentsController.js");
+
 const app = express();
 app.use(express.json());
 
@@ -16,7 +20,7 @@ app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 app.get("/api/users", getUsers);
 app.get("/api/articles", getArticles);
-
+app.post("/api/articles/:article_id/comments", postCommentByArticleId);
 app.patch("/api/articles/:article_id", patchArticleById);
 
 app.all("*", (req, res) => {
