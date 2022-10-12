@@ -1,7 +1,10 @@
 const {
   selectArticleById,
   updateArticleById,
+  selectArticles,
 } = require("../models/articlesModel");
+
+const { selectTopicByName } = require("../models/topicsModel");
 
 const getArticleById = (req, res, next) => {
   const { article_id } = req.params;
@@ -27,4 +30,22 @@ const patchArticleById = (req, res, next) => {
       next(err);
     });
 };
-module.exports = { getArticleById, patchArticleById };
+const getArticles = (req, res, next) => {
+  const { topic } = req.query;
+
+  const promises = [selectArticles(topic)];
+  if (topic) {
+    promises.push(selectTopicByName(topic));
+  }
+
+  Promise.all(promises)
+    .then((promises) => {
+      const [articles, topic] = promises;
+      res.status(200).send({ articles: articles });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+module.exports = { getArticleById, patchArticleById, getArticles };

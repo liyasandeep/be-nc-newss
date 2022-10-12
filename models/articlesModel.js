@@ -35,4 +35,22 @@ const updateArticleById = (article_id, inc_votes) => {
       });
   }
 };
-module.exports = { selectArticleById, updateArticleById };
+
+const selectArticles = (topic) => {
+  let queryStr = `SELECT articles.article_id, articles.author,title,topic,articles.created_at,articles.votes,COUNT(comments.article_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id `;
+
+  let queryValues = [];
+
+  if (topic) {
+    queryValues.push(topic);
+
+    queryStr += `WHERE topic = $1 `;
+  }
+
+  queryStr += `GROUP BY articles.article_id ORDER BY articles.created_at DESC`;
+
+  return db.query(queryStr, queryValues).then(({ rows: articles }) => {
+    return articles;
+  });
+};
+module.exports = { selectArticleById, updateArticleById, selectArticles };
