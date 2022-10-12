@@ -40,7 +40,8 @@ const getArticles = (req, res, next) => {
 
   Promise.all(promises)
     .then((promises) => {
-      res.status(200).send({ articles: promises[0] });
+      const [articles, topic] = promises;
+      res.status(200).send({ articles: articles });
     })
     .catch((err) => {
       next(err);
