@@ -205,7 +205,7 @@ describe("GET/api/articles/:article_id/comments", () => {
   });
 });
 describe("GET/api/users", () => {
-  test("200:responds with an array of user objects each of which should have the following properties", () => {
+  test("200:responds with an array of user objects each of which should have 'username','name' and 'avatar_url'", () => {
     return request(app)
       .get("/api/users")
       .expect(200)
@@ -296,7 +296,7 @@ describe("PATCH/api/articles/:article_id", () => {
   });
 });
 
-describe.only("POST/api/articles/:article_id/comments", () => {
+describe("POST/api/articles/:article_id/comments", () => {
   test("201:adds a comment to the article specified by article id and responds with the added comment", () => {
     return request(app)
       .post("/api/articles/2/comments")
@@ -350,6 +350,28 @@ describe.only("POST/api/articles/:article_id/comments", () => {
         expect(message).toBe("Username not found");
       });
   });
+  test("400:responds with error when required fields are missing(body)", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .expect(400)
+      .send({ username: "rogersop" })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Missing body");
+      });
+  });
+  test("400:responds with error when required fields are missing(username)", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .expect(400)
+      .send({ body: "new comment added" })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Missing username");
+      });
+  });
+
+  //empty body gets handled with missing username case
 });
 
 describe("404:Invalid Route Endpoint", () => {

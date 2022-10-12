@@ -6,9 +6,9 @@ const {
 const { selectArticleById } = require("../models/articlesModel");
 
 const { selectUserByUsername } = require("../models/usersModel");
+
 const getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
-  console.log(article_id);
   selectCommentsByArticleId(article_id)
     .then((comments) => {
       res.status(200).send({ comments });
@@ -19,22 +19,32 @@ const getCommentsByArticleId = (req, res, next) => {
 };
 
 const postCommentByArticleId = (req, res, next) => {
-  console.log("in controller");
   const { article_id } = req.params;
   const { username, body } = req.body;
 
-  selectUserByUsername(username)
-    .then((username) => {
-      return selectArticleById(article_id);
-    })
-    .then(({ rows: article }) => {
-      return insertCommentByArticleId(article_id, username, body);
-    })
-    .then((comment) => {
+  const promises = [
+    selectArticleById(article_id),
+    selectUserByUsername(username),
+  ];
+  if (username) {
+    promises.push(insertCommentByArticleId(article_id, username, body));
+  }
+  Promise.all(promises)
+    .then((promisesResultArr) => {
+      const [article, username, comment] = promisesResultArr;
       res.status(201).send({ comment });
     })
+    // selectUserByUsername(username)
+    //   .then((username) => {
+    //     return selectArticleById(article_id);
+    //   })
+    //   .then(({ rows: article }) => {
+    //     return insertCommentByArticleId(article_id, username, body);
+    //   })
+    //   .then((comment) => {
+    //     res.status(201).send({ comment });
+    //   })
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 };
