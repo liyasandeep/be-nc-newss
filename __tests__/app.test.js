@@ -200,7 +200,17 @@ describe("GET/api/articles/:article_id/comments", () => {
       .expect(404)
       .then(({ body }) => {
         const { message } = body;
-        expect(message).toBe("Article Id not found");
+        expect(message).toBe("Article Id does not exist");
+      });
+  });
+
+  test("200:responds with an empty array when article_id exists but has no associated comments with it", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toEqual([]);
       });
   });
 });
