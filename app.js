@@ -11,7 +11,9 @@ const {
   postCommentByArticleId,
   deleteCommentByCommentId,
 } = require("./controllers/commentsController.js");
+
 const endpoints = require("./endpoints.json");
+
 const app = express();
 app.use(express.json());
 
