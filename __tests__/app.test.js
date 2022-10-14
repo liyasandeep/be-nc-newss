@@ -57,7 +57,7 @@ describe("GET/api/articles", () => {
       });
   });
 
-  test("200:articles are sorted by created_at in descending order by default", () => {
+  test("200:articles are sorted by created_at(date) in descending order by default", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -73,6 +73,39 @@ describe("GET/api/articles", () => {
       .then(({ body }) => {
         const { articles } = body;
         expect(articles).toHaveLength(11);
+        articles.forEach((article) => {
+          expect(article.topic).toBe("mitch");
+        });
+      });
+  });
+
+  test("200:articles are sort by the value of query sort_by", () => {
+    return request(app)
+      .get("/api/articles?sort_by=author")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toBeSortedBy("author", { descending: true });
+      });
+  });
+
+  test("200:articles are orderd by the value of query order ", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toBeSortedBy("created_at", { ascending: true });
+      });
+  });
+
+  test("200:articles are retrieved correctly when all the three queries are given", () => {
+    return request(app)
+      .get("/api/articles?order=asc&sort_by=author&topic=mitch")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toBeSortedBy("author", { ascending: true });
         articles.forEach((article) => {
           expect(article.topic).toBe("mitch");
         });
@@ -95,6 +128,26 @@ describe("GET/api/articles", () => {
       .then(({ body }) => {
         const { articles } = body;
         expect(articles).toHaveLength(0);
+      });
+  });
+
+  test("400:responds with error when sort_by has invalid value", () => {
+    return request(app)
+      .get("/api/articles?sort_by=not-a-column")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid column");
+      });
+  });
+
+  test("400:responds with error when order has invalid value", () => {
+    return request(app)
+      .get("/api/articles?order=not-an-order")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid order");
       });
   });
 });
