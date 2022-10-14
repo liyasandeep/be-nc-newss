@@ -20,4 +20,18 @@ const insertCommentByArticleId = (article_id, username, body) => {
     });
 };
 
-module.exports = { selectCommentsByArticleId, insertCommentByArticleId };
+const removeCommentByCommentId = (comment_id) => {
+  let queryStr = ` DELETE FROM comments WHERE comment_id = $1;`;
+  return db.query(queryStr, [comment_id]).then(({ rowCount }) => {
+    if (rowCount === 0) {
+      return Promise.reject({ status: 404, message: "Id not found" });
+    }
+    return;
+  });
+};
+
+module.exports = {
+  selectCommentsByArticleId,
+  insertCommentByArticleId,
+  removeCommentByCommentId,
+};
