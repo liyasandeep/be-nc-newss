@@ -36,7 +36,24 @@ const updateArticleById = (article_id, inc_votes) => {
   }
 };
 
-const selectArticles = (topic) => {
+const selectArticles = (topic, sort_by = "created_at", order = "desc") => {
+  const validSortValues = [
+    "title",
+    "topic",
+    "author",
+    "body",
+    "created_at",
+    "votes",
+  ];
+  const validOrderValues = ["asc", "desc"];
+
+  if (!validSortValues.includes(sort_by)) {
+    return Promise.reject({ status: 400, message: "Invalid column" });
+  }
+
+  if (!validOrderValues.includes(order)) {
+    return Promise.reject({ status: 400, message: "Invalid order" });
+  }
   let queryStr = `SELECT articles.article_id, articles.author,title,topic,articles.created_at,articles.votes,COUNT(comments.article_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id `;
 
   let queryValues = [];
@@ -47,7 +64,7 @@ const selectArticles = (topic) => {
     queryStr += `WHERE topic = $1 `;
   }
 
-  queryStr += `GROUP BY articles.article_id ORDER BY articles.created_at DESC`;
+  queryStr += `GROUP BY articles.article_id ORDER BY articles.${sort_by} ${order}`;
 
   return db.query(queryStr, queryValues).then(({ rows: articles }) => {
     return articles;
