@@ -10,18 +10,148 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all topics",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "description": "serves an array of all articles",
+    "queries": ["topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
+          "article_id": 33,
+          "author": "weegembump",
           "title": "Seafood substitutions are increasing",
           "topic": "cooking",
-          "author": "weegembump",
-          "body": "Text from the article..",
-          "created_at": 1527695953341
+          "created_at": 1600277160000,
+          "votes": 0,
+          "comment_count": 6
         }
       ]
     }
+  },
+
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "grumpy19",
+          "name": "Paul Grump",
+          "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/7/78/Mr-Grumpy-3A.PNG/revision/latest?cb=20170707233013"
+        }
+      ]
+    }
+  },
+  "GET /api/articles:article_id": {
+    "description": "serves an article object with the given article id",
+    "queries": [],
+    "exampleResponse": {
+      "article": [
+        {
+          "article_id": 1,
+          "author": "jessjelly",
+          "title": "Running a Node App",
+          "body": "This is part two of a series on how to get up and running with Systemd and Node.js.  This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
+          "topic": "coding",
+          "created_at": 1604728980000,
+          "votes": 0,
+          "comment_count": 8
+        }
+      ]
+    }
+  },
+
+  "PATCH /api/articles:article_id": {
+    "description": "updates an article with the new vote value and responds with the updated article",
+    "queries": [],
+    "exampleRequest": { "inc_votes": 1 },
+    "exampleResponse": {
+      "article": [
+        {
+          "article_id": 1,
+          "author": "jessjelly",
+          "title": "Running a Node App",
+          "body": "This is part two of a series on how to get up and running with Systemd and Node.js.  This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
+          "topic": "coding",
+          "created_at": 1604728980000,
+          "votes": 1,
+          "comment_count": 8
+        }
+      ]
+    }
+  },
+
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of comments for the given article_id,sorted by created_at property in descending order",
+    "queries": [],
+    "exampleResponse": {
+      "comments": [
+        {
+          "article_id": 5,
+          "comment_id": 144,
+          "votes": 19,
+          "created_at": "2020-11-23 17:00:00",
+          "author": "grumpy19",
+          "body": "Placeat voluptatum consequatur ducimus et eum molestiae impedit eveniet. Recusandae rerum voluptas quia mollitia quam velit iusto. Eum eos similique minima necessitatibus nemo. Iure deleniti omnis enim animi iste delectus et consequuntur."
+        },
+        {
+          "article_id": 5,
+          "comment_id": 116,
+          "votes": 3,
+          "created_at": "2020-09-03 02:06:00",
+          "author": "weegembump",
+          "body": "Praesentium dolor doloribus sint. Quisquam molestiae dolorum asperiores animi omnis."
+        },
+        {
+          "article_id": 5,
+          "comment_id": 18,
+          "votes": 6,
+          "created_at": "2020-08-15 18:11:00",
+          "author": "jessjelly",
+          "body": " Dicta aut quo unde cupiditate dolorum. Voluptas mollitia exercitationem vel porro dolor. Ea autem est pariatur."
+        },
+        {
+          "article_id": 5,
+          "comment_id": 88,
+          "votes": -3,
+          "created_at": "2020-05-26 16:11:00",
+          "author": "weegembump",
+          "body": "Minus minus sit non fugiat sunt et nostrum aut et. Dignissimos qui nemo quos fuga qui temporibus occaecati aut. Explicabo dolor commodi officia nulla totam inventore."
+        },
+        {
+          "article_id": 5,
+          "comment_id": 149,
+          "votes": 10,
+          "created_at": "2020-05-04 06:15:00",
+          "author": "grumpy19",
+          "body": "Accusamus vel vero aut quaerat quo nihil saepe. Eius quam consequatur explicabo sed est dolor soluta. Corporis enim possimus quo tempore voluptatem id. Sit et modi id ad eum deserunt. Aut voluptatem eum dolor eius. Aperiam ut quo rerum maxime omnis molestiae ipsum quibusdam laboriosam."
+        },
+        {
+          "article_id": 5,
+          "comment_id": 238,
+          "votes": 4,
+          "created_at": "2020-02-12 22:07:00",
+          "author": "happyamy2016",
+          "body": "Aut esse incidunt laborum enim nam voluptas enim deleniti dolores. Neque voluptas voluptatem. Est quia itaque aut est laudantium dolor. Esse vitae eum iste ut mollitia officiis architecto quo autem. Accusamus quod maiores quia incidunt veniam. Rerum adipisci sed quasi labore neque sit rem quam."
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "Adds a new comment to an article specified by the article_id and responds with the new comment",
+    "queries": [],
+    "exampleRequest": { "username": "grumpy19", "body": "new comment added" },
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 302,
+        "author": "grumpy19",
+        "article_id": 2,
+        "votes": 0,
+        "created_at": "2020-10-13 14:07:00",
+        "body": "new comment added"
+      }
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes a comment by comment_id",
+    "queries": []
   }
 }

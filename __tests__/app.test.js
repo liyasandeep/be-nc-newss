@@ -12,6 +12,17 @@ beforeEach(() => {
   return seed(testData);
 });
 
+describe("GET/api", () => {
+  test("200:responds with a json representation of all the available endpoints of the api", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        const { endpoints } = body;
+        expect(endpoints).toBeInstanceOf(Object);
+      });
+  });
+});
 describe("GET/api/topics", () => {
   test("200 and responds with an array of topic objects each of which should have the following properties slug and description", () => {
     return request(app)
