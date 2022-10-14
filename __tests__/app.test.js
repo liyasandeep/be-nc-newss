@@ -153,8 +153,69 @@ describe("GET/api/articles/:article_id", () => {
   });
 });
 
+describe("GET/api/articles/:article_id/comments", () => {
+  test("200:responds with an array of comments for the given article_id", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(11);
+
+        comments.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+  test("200:comments are sorted by created_at in descending order by default", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("400:responds with error when article_id is invalid", () => {
+    return request(app)
+      .get("/api/articles/not-an-id/comments")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid type");
+      });
+  });
+  test("404:responds with error when article_id doesnot exit in database", () => {
+    return request(app)
+      .get("/api/articles/99999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Article Id does not exist");
+      });
+  });
+
+  test("200:responds with an empty array when article_id exists but has no associated comments with it", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toEqual([]);
+      });
+  });
+});
 describe("GET/api/users", () => {
-  test("200:responds with an array of user objects each of which should have the following properties", () => {
+  test("200:responds with an array of user objects each of which should have 'username','name' and 'avatar_url'", () => {
     return request(app)
       .get("/api/users")
       .expect(200)
@@ -245,6 +306,84 @@ describe("PATCH/api/articles/:article_id", () => {
   });
 });
 
+describe("POST/api/articles/:article_id/comments", () => {
+  test("201:adds a comment to the article specified by article id and responds with the added comment", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .expect(201)
+      .send({ username: "rogersop", body: "new comment added" })
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+            author: expect.any(String),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+          })
+        );
+        expect(comment.article_id).toBe(2);
+        expect(comment.author).toBe("rogersop");
+        expect(comment.body).toBe("new comment added");
+      });
+  });
+  test("400:responds with error when article id is invalid", () => {
+    return request(app)
+      .post("/api/articles/not-an-id/comments")
+      .expect(400)
+      .send({ username: "rogersop", body: "new comment added" })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid type");
+      });
+  });
+  test("404:responds with error when passed an id not present in database", () => {
+    return request(app)
+      .post("/api/articles/99999/comments")
+      .expect(404)
+      .send({ username: "rogersop", body: "new comment added" })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Article Id does not exist");
+      });
+  });
+
+  test("404:responds with error when passed username not in database", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .expect(404)
+      .send({ username: "not-a-username-in-db", body: "new comment added" })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Username not found");
+      });
+  });
+  test("400:responds with error when required fields are missing(body)", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .expect(400)
+      .send({ username: "rogersop" })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Missing body");
+      });
+  });
+  test("400:responds with error when required fields are missing(username)", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .expect(400)
+      .send({ body: "new comment added" })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Missing username");
+      });
+  });
+
+  //empty body gets handled with missing username case
+});
+
 describe("DELETE/api/comments/:comment_id", () => {
   test("204:deletes a comment by comment_id", () => {
     return request(app).delete("/api/comments/3").expect(204);
@@ -286,6 +425,17 @@ describe("404:Invalid Route Endpoint", () => {
       .patch("/api/not-a-route/2")
       .expect(404)
       .send({ inc_votes: 2 })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid Route!");
+      });
+  });
+
+  test("POST 404:responds with error when passed a route that doesnot exist", () => {
+    return request(app)
+      .post("/api/not-a-route/2/comments")
+      .expect(404)
+      .send({ username: "rogersop", body: "new comment added" })
       .then(({ body }) => {
         const { message } = body;
         expect(message).toBe("Invalid Route!");
