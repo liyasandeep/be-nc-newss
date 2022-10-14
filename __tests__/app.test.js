@@ -245,6 +245,31 @@ describe("PATCH/api/articles/:article_id", () => {
   });
 });
 
+describe("DELETE/api/comments/:comment_id", () => {
+  test("204:deletes a comment by comment_id", () => {
+    return request(app).delete("/api/comments/3").expect(204);
+  });
+  test("400:responds with error when comment id is inavlid", () => {
+    return request(app)
+      .delete("/api/comments/not-an-id")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid type");
+      });
+  });
+
+  test("404:responds with error when comment id is not in database", () => {
+    return request(app)
+      .delete("/api/comments/99999")
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Id not found");
+      });
+  });
+});
+
 describe("404:Invalid Route Endpoint", () => {
   test("404:responds with error when passed a route that doesnot exist", () => {
     return request(app)

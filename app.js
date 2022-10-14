@@ -6,6 +6,9 @@ const {
   getArticles,
 } = require("./controllers/articlesController");
 const getUsers = require("./controllers/usersController.js");
+
+const deleteCommentByCommentId = require("./controllers/commentsController.js");
+
 const app = express();
 app.use(express.json());
 
@@ -16,6 +19,7 @@ app.get("/api/users", getUsers);
 app.get("/api/articles", getArticles);
 
 app.patch("/api/articles/:article_id", patchArticleById);
+app.delete("/api/comments/:comment_id", deleteCommentByCommentId);
 
 app.all("*", (req, res) => {
   res.status(404).send({ message: "Invalid Route!" });
