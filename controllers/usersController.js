@@ -1,4 +1,4 @@
-const selectUsers = require("../models/usersModel");
+const { selectUsers } = require("../models/usersModel");
 
 const getUsers = (req, res, next) => {
   selectUsers()
