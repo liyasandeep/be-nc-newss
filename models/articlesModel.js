@@ -65,7 +65,7 @@ const selectArticles = (topic, sort_by = "created_at", order = "desc") => {
     queryStr += `WHERE topic = $1 `;
   }
 
-  queryStr += `GROUP BY articles.article_id ORDER BY articles.${sort_by} ${order}`;
+  queryStr += `GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`;
 
   return db.query(queryStr, queryValues).then(({ rows: articles }) => {
     return articles;
