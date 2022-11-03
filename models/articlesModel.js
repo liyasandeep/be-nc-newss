@@ -44,6 +44,7 @@ const selectArticles = (topic, sort_by = "created_at", order = "desc") => {
     "body",
     "created_at",
     "votes",
+    "comment_count",
   ];
   const validOrderValues = ["asc", "desc"];
 
