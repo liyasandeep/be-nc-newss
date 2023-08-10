@@ -6,7 +6,7 @@ In this project i have built an API for the purpose of accessing application dat
 
 ## Link to hosted version
 
-https://nc-news-be-liya.herokuapp.com/api
+https://be-nc-newss.cyclic.app/api
 
 You can see a list of available endpoints provided by the API here.
 
