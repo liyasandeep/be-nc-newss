@@ -1,36 +1,13 @@
 const express = require("express");
 const cors = require("cors");
-const getTopics = require("./controllers/topicsController");
-const {
-  getArticleById,
-  patchArticleById,
-  getArticles,
-} = require("./controllers/articlesController");
-const getUsers = require("./controllers/usersController.js");
-const {
-  getCommentsByArticleId,
-  postCommentByArticleId,
-  deleteCommentByCommentId,
-} = require("./controllers/commentsController.js");
 
-const endpoints = require("./endpoints.json");
+const apiRouter = require("./routes/apiRouter");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/api", (req, res) => {
-  res.status(200).send({ endpoints });
-});
-app.get("/api/topics", getTopics);
-app.get("/api/articles/:article_id", getArticleById);
-app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
-
-app.get("/api/users", getUsers);
-app.get("/api/articles", getArticles);
-app.post("/api/articles/:article_id/comments", postCommentByArticleId);
-app.patch("/api/articles/:article_id", patchArticleById);
-app.delete("/api/comments/:comment_id", deleteCommentByCommentId);
+app.use("/api", apiRouter);
 
 app.all("*", (req, res) => {
   res.status(404).send({ message: "Invalid Route!" });
