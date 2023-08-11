@@ -300,6 +300,41 @@ describe("GET/api/users", () => {
   });
 });
 
+describe("GET/api/users/:username", () => {
+  test("200:responds with an user object with the specified username ", () => {
+    return request(app)
+      .get("/api/users/rogersop")
+      .expect(200)
+      .then(({ body }) => {
+        const { user } = body;
+        expect(user).toBeInstanceOf(Object);
+        expect(user).toEqual(
+          expect.objectContaining({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          })
+        );
+        expect(user).toEqual({
+          username: "rogersop",
+          name: "paul",
+          avatar_url:
+            "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
+        });
+      });
+  });
+
+  test("404:responds with error when passed an id not present in database", () => {
+    return request(app)
+      .get("/api/users/grumpy19")
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Username not found");
+      });
+  });
+});
+
 describe("PATCH/api/articles/:article_id", () => {
   test("200:responds with the updated aricle,with the vote property being updated", () => {
     return request(app)
