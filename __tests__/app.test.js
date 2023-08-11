@@ -508,6 +508,75 @@ describe("DELETE/api/comments/:comment_id", () => {
   });
 });
 
+describe("PATCH/api/comments/:comment_id", () => {
+  test("200:Responds with the updated comment, with the vote property being updated", () => {
+    return request(app)
+      .patch("/api/comments/2")
+      .expect(200)
+      .send({ inc_votes: 1 })
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment).toBeInstanceOf(Object);
+        expect(comment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            votes: expect.any(Number),
+            author: expect.any(String),
+            article_id: expect.any(Number),
+            created_at: expect.any(String),
+          })
+        );
+
+        expect(comment.comment_id).toBe(2);
+        expect(comment.votes).toBe(15);
+      });
+  });
+  test("400:responds with error when comment id is inavlid", () => {
+    return request(app)
+      .patch("/api/comments/not-an-id")
+      .expect(400)
+      .send({ inc_votes: 1 })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid type");
+      });
+  });
+
+  test("404:responds with error when comment id is not in database", () => {
+    return request(app)
+      .patch("/api/comments/99999")
+      .expect(404)
+      .send({ inc_votes: 1 })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Comment Id does not exist");
+      });
+  });
+
+  test("400:responds with error when passed object has invalid value type  like {inc_votes : 'abc'}", () => {
+    return request(app)
+      .patch("/api/comments/2")
+      .expect(400)
+      .send({ inc_votes: "abc" })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid type");
+      });
+  });
+
+  test("400:responds with error when passed object has invalid key like '{inc_vote : 4}'", () => {
+    return request(app)
+      .patch("/api/comments/2")
+      .expect(400)
+      .send({ inc_vote: 4 })
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Invalid key");
+      });
+  });
+});
+
 describe("404:Invalid Route Endpoint", () => {
   test("404:responds with error when passed a route that doesnot exist", () => {
     return request(app)

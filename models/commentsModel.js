@@ -30,8 +30,30 @@ const removeCommentByCommentId = (comment_id) => {
   });
 };
 
+const updateCommentByCommentId = (comment_id, inc_votes) => {
+  if (inc_votes === undefined) {
+    return Promise.reject({ status: 400, message: "Invalid key" });
+  } else {
+    let queryStr = `UPDATE comments SET  votes = votes + $2 WHERE comment_id = $1 RETURNING *; `;
+
+    return db
+      .query(queryStr, [comment_id, inc_votes])
+      .then(({ rows: comment }) => {
+        if (comment.length === 1) {
+          return comment[0];
+        } else {
+          return Promise.reject({
+            status: 404,
+            message: "Comment Id does not exist",
+          });
+        }
+      });
+  }
+};
+
 module.exports = {
   selectCommentsByArticleId,
   insertCommentByArticleId,
   removeCommentByCommentId,
+  updateCommentByCommentId,
 };
