@@ -7,9 +7,18 @@ const selectCommentsByArticleId = (article_id) => {
   });
 };
 
-const insertCommentByArticleId = (article_id, username, body) => {
+const insertCommentByArticleId = (
+  article_id,
+  username,
+  body,
+  requestLength
+) => {
   if (!body) {
     return Promise.reject({ status: 400, message: "Missing body" });
+  }
+
+  if (requestLength > 2) {
+    return Promise.reject({ status: 400, message: "Invalid Input" });
   }
   let queryStr = `INSERT INTO comments(body,article_id,author) VALUES ($1, $2, $3) RETURNING *;`;
 

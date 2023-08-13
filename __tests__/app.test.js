@@ -429,6 +429,22 @@ describe("ARTICLE TESTS", () => {
     });
 
     //empty body gets handled with missing username case
+
+    test("400:responds with error when extra keys are passed in request body", () => {
+      return request(app)
+        .post("/api/articles/2/comments")
+        .send({
+          username: "rogersop",
+          body: "This is the body content",
+          topic: "cats",
+          votes: 100,
+        })
+        .expect(400)
+        .then(({ body }) => {
+          const { message } = body;
+          expect(message).toBe("Invalid Input");
+        });
+    });
   });
 
   describe("POST/api/articles", () => {

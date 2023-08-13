@@ -27,13 +27,16 @@ const getCommentsByArticleId = (req, res, next) => {
 const postCommentByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { username, body } = req.body;
+  const requestLength = Object.keys(req.body).length;
 
   const promises = [
     selectArticleById(article_id),
     selectUserByUsername(username),
   ];
   if (username) {
-    promises.push(insertCommentByArticleId(article_id, username, body));
+    promises.push(
+      insertCommentByArticleId(article_id, username, body, requestLength)
+    );
   }
   Promise.all(promises)
     .then((promisesResultArr) => {
