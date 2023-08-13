@@ -2,6 +2,7 @@ const {
   selectArticleById,
   updateArticleById,
   selectArticles,
+  insertArticle,
 } = require("../models/articlesModel");
 
 const { selectTopicByName } = require("../models/topicsModel");
@@ -48,4 +49,17 @@ const getArticles = (req, res, next) => {
     });
 };
 
-module.exports = { getArticleById, patchArticleById, getArticles };
+const postArticle = (req, res, next) => {
+  const { author, title, body, topic } = req.body;
+  const requestLength = Object.keys(req.body).length;
+
+  insertArticle(author, title, body, topic, requestLength)
+    .then((article) => {
+      res.status(201).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+module.exports = { getArticleById, patchArticleById, getArticles, postArticle };

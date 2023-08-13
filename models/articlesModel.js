@@ -1,4 +1,7 @@
 const db = require("../db/connection");
+const { selectUserByUsername } = require("../models/usersModel");
+
+const { selectTopicByName } = require("../models/topicsModel");
 
 const selectArticleById = (article_id) => {
   let queryStr = `SELECT articles.* ,COUNT(comments.article_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id =$1 GROUP BY articles.article_id;`;
@@ -71,4 +74,39 @@ const selectArticles = (topic, sort_by = "created_at", order = "desc") => {
     return articles;
   });
 };
-module.exports = { selectArticleById, updateArticleById, selectArticles };
+
+const insertArticle = (author, title, body, topic, requestLength) => {
+  if (!body || !author || !title || !topic || requestLength > 4) {
+    return Promise.reject({ status: 400, message: "Invalid Input" });
+  }
+
+  const promises = [selectUserByUsername(author), selectTopicByName(topic)];
+
+  return Promise.all(promises)
+    .then((promiseArr) => {
+      const [authorValues, topicValues] = promiseArr;
+      let queryStr = `INSERT INTO articles(author,title,body,topic) VALUES ($1, $2, $3,$4) RETURNING *;`;
+      return db.query(queryStr, [
+        authorValues.username,
+        title,
+        body,
+        topicValues.slug,
+      ]);
+    })
+    .then(({ rows: [article] }) => {
+      const article_id = article.article_id;
+      return article_id;
+    })
+    .then((article_id) => {
+      return selectArticleById(article_id);
+    })
+    .then((article) => {
+      return article;
+    });
+};
+module.exports = {
+  selectArticleById,
+  updateArticleById,
+  selectArticles,
+  insertArticle,
+};

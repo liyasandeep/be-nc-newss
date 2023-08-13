@@ -430,6 +430,117 @@ describe("ARTICLE TESTS", () => {
 
     //empty body gets handled with missing username case
   });
+
+  describe("POST/api/articles", () => {
+    test("201:responds with the newly added article", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          author: "rogersop",
+          title: "new article added",
+          body: "Its nice",
+          topic: "cats",
+        })
+        .expect(201)
+
+        .then(({ body }) => {
+          const { article } = body;
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              body: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              title: expect.any(String),
+              comment_count: expect.any(Number),
+            })
+          );
+          expect(article.title).toBe("new article added");
+          expect(article.topic).toBe("cats");
+          expect(article.author).toBe("rogersop");
+          expect(article.body).toBe("Its nice");
+        });
+    });
+
+    test("404:responds with error when passed username not in database", () => {
+      return request(app)
+        .post("/api/articles")
+        .expect(404)
+        .send({
+          author: "not-a-username-in-db",
+          title: "new article added",
+          body: "Its nice",
+          topic: "cats",
+        })
+        .then(({ body }) => {
+          const { message } = body;
+          expect(message).toBe("Username not found");
+        });
+    });
+
+    test("404:responds with error when passed topic not in database ", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          author: "rogersop",
+          title: "new article added",
+          body: "Its nice",
+          topic: "NotATopic",
+        })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("Topic not found");
+        });
+    });
+    test("400:responds with error when required fields(keys) are missing", () => {
+      return request(app)
+        .post("/api/articles")
+        .expect(400)
+        .send({
+          author: "rogersop",
+          title: "new article added",
+          topic: "cats",
+        })
+        .then(({ body }) => {
+          const { message } = body;
+          expect(message).toBe("Invalid Input");
+        });
+    });
+    test("400:responds with error when required field data is empty", () => {
+      return request(app)
+        .post("/api/articles")
+        .expect(400)
+        .send({
+          title: "new article added",
+          topic: "cats",
+          author: "",
+          body: "It's nice",
+        })
+        .then(({ body }) => {
+          const { message } = body;
+          expect(message).toBe("Invalid Input");
+        });
+    });
+
+    test("400:responds with error when extra keys are passed in request body", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          author: "rogersop",
+          title: "Title here",
+          body: "This is the body content",
+          topic: "cats",
+          votes: 100,
+        })
+        .expect(400)
+        .then(({ body }) => {
+          const { message } = body;
+          expect(message).toBe("Invalid Input");
+        });
+    });
+  });
 });
 
 describe("USER TESTS", () => {
