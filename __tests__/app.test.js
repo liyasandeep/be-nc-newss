@@ -45,6 +45,70 @@ describe("TOPIC TESTS", () => {
         });
     });
   });
+
+  describe("POST/api/topics", () => {
+    test("201:responds with the newly added topic object", () => {
+      return request(app)
+        .post("/api/topics")
+        .send({
+          slug: "coding",
+          description: "Learning MERN Stack",
+        })
+        .expect(201)
+
+        .then(({ body }) => {
+          const { topic } = body;
+          expect(topic).toEqual(
+            expect.objectContaining({
+              slug: expect.any(String),
+              description: expect.any(String),
+            })
+          );
+          expect(topic.slug).toBe("coding");
+          expect(topic.description).toBe("Learning MERN Stack");
+        });
+    });
+    test("400:responds with error when required fields(keys) are missing", () => {
+      return request(app)
+        .post("/api/topics")
+        .expect(400)
+        .send({
+          description: "Learning MERN Stack",
+        })
+        .then(({ body }) => {
+          const { message } = body;
+          expect(message).toBe("Invalid Input");
+        });
+    });
+    test("400:responds with error when required field data is empty", () => {
+      return request(app)
+        .post("/api/topics")
+        .expect(400)
+        .send({
+          slug: "",
+          description: "new comment added",
+        })
+        .then(({ body }) => {
+          const { message } = body;
+          expect(message).toBe("Invalid Input");
+        });
+    });
+
+    test("400:responds with error when extra keys are passed in request body", () => {
+      return request(app)
+        .post("/api/topics")
+        .send({
+          slug: "coding",
+          description: "new comment added",
+          author: "rogersop",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          const { message } = body;
+          expect(message).toBe("Invalid Input");
+        });
+    });
+  });
 });
 
 describe("ARTICLE TESTS", () => {

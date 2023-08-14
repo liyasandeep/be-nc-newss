@@ -18,4 +18,15 @@ const selectTopicByName = (topic) => {
     });
 };
 
-module.exports = { selectTopics, selectTopicByName };
+const insertTopic = (slug, description, requestLength) => {
+  if (!slug || !description || requestLength > 2) {
+    return Promise.reject({ status: 400, message: "Invalid Input" });
+  }
+  let queryStr = ` INSERT INTO topics(slug,description) VALUES ($1,$2) RETURNING *; `;
+
+  return db.query(queryStr, [slug, description]).then(({ rows: [topic] }) => {
+    return topic;
+  });
+};
+
+module.exports = { selectTopics, selectTopicByName, insertTopic };
