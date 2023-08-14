@@ -1,10 +1,21 @@
 const db = require("../db/connection.js");
 
-const selectCommentsByArticleId = (article_id) => {
-  const query_str = `SELECT article_id,comment_id,votes,created_at,author,body FROM comments WHERE article_id =$1 ORDER BY created_at DESC;`;
-  return db.query(query_str, [article_id]).then(({ rows: comments }) => {
-    return comments;
-  });
+const selectCommentsByArticleId = (article_id, limit = 10, p = 1) => {
+  const offset = (p - 1) * limit;
+
+  if (isNaN(limit)) {
+    return Promise.reject({ status: 400, message: "invalid limit query" });
+  }
+
+  if (isNaN(p)) {
+    return Promise.reject({ status: 400, message: "invalid page query" });
+  }
+  const query_str = `SELECT article_id,comment_id,votes,created_at,author,body FROM comments WHERE article_id =$1 ORDER BY created_at DESC LIMIT $2 OFFSET $3`;
+  return db
+    .query(query_str, [article_id, limit, offset])
+    .then(({ rows: comments }) => {
+      return comments;
+    });
 };
 
 const insertCommentByArticleId = (

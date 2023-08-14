@@ -12,9 +12,11 @@ const { selectUserByUsername } = require("../models/usersModel");
 const getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
 
+  const { limit, p } = req.query;
+
   selectArticleById(article_id)
     .then((article) => {
-      return selectCommentsByArticleId(article_id);
+      return selectCommentsByArticleId(article_id, limit, p);
     })
     .then((comments) => {
       res.status(200).send({ comments });

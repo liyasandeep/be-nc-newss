@@ -290,14 +290,14 @@ describe("ARTICLE TESTS", () => {
   });
 
   describe("GET/api/articles/:article_id/comments", () => {
-    test("200:responds with an array of comments for the given article_id", () => {
+    test("200:responds with an array of 10 comments for the given article_id by default", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
         .then(({ body }) => {
           const { comments } = body;
           expect(comments).toBeInstanceOf(Array);
-          expect(comments).toHaveLength(11);
+          expect(comments).toHaveLength(10);
 
           comments.forEach((comment) => {
             expect(comment).toEqual(
@@ -319,6 +319,60 @@ describe("ARTICLE TESTS", () => {
         .then(({ body }) => {
           const { comments } = body;
           expect(comments).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+
+    test("200:comments are limited by the limit query", () => {
+      return request(app)
+        .get("/api/articles/1/comments?limit=5")
+        .expect(200)
+        .then(({ body }) => {
+          const { comments } = body;
+          expect(comments).toBeInstanceOf(Array);
+          expect(comments).toHaveLength(5);
+        });
+    });
+
+    test("200:commets are displayed correctly using the page(p) query which specifies the range of enteries to be displayed ", () => {
+      return request(app)
+        .get("/api/articles/1/comments?p=2")
+        .expect(200)
+        .then(({ body }) => {
+          const { comments } = body;
+
+          expect(comments).toBeInstanceOf(Array);
+          expect(comments).toHaveLength(1);
+        });
+    });
+
+    test("200: comments are retrieved correctly when both page and limit query are given", () => {
+      return request(app)
+        .get("/api/articles/1/comments?p=3&limit=4")
+        .expect(200)
+        .then(({ body }) => {
+          const { comments } = body;
+          expect(comments).toBeInstanceOf(Array);
+          expect(comments).toHaveLength(3);
+        });
+    });
+
+    test("400: responds with error when limit query has invalid value(not a valid number)", () => {
+      return request(app)
+        .get("/api/articles/1/comments?limit=not-a-number")
+        .expect(400)
+        .then(({ body }) => {
+          const { message } = body;
+          expect(message).toBe("invalid limit query");
+        });
+    });
+
+    test("400: responds with error when page query(p) has invalid value(not a valid number)", () => {
+      return request(app)
+        .get("/api/articles/1/comments?p=not-a-number")
+        .expect(400)
+        .then(({ body }) => {
+          const { message } = body;
+          expect(message).toBe("invalid page query");
         });
     });
     test("400:responds with error when article_id is invalid", () => {
