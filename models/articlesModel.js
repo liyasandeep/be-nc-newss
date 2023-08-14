@@ -2,6 +2,7 @@ const db = require("../db/connection");
 const { selectUserByUsername } = require("../models/usersModel");
 
 const { selectTopicByName } = require("../models/topicsModel");
+const articles = require("../db/data/test-data/articles");
 
 const selectArticleById = (article_id) => {
   let queryStr = `SELECT articles.* ,COUNT(comments.article_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id =$1 GROUP BY articles.article_id;`;
@@ -39,7 +40,13 @@ const updateArticleById = (article_id, inc_votes) => {
   }
 };
 
-const selectArticles = (topic, sort_by = "created_at", order = "desc") => {
+const selectArticles = (
+  topic,
+  sort_by = "created_at",
+  order = "desc",
+  limit = 10,
+  p = 1
+) => {
   const validSortValues = [
     "title",
     "topic",
@@ -51,6 +58,7 @@ const selectArticles = (topic, sort_by = "created_at", order = "desc") => {
   ];
   const validOrderValues = ["asc", "desc"];
 
+  const offset = (p - 1) * limit;
   if (!validSortValues.includes(sort_by)) {
     return Promise.reject({ status: 400, message: "Invalid column" });
   }
@@ -58,21 +66,42 @@ const selectArticles = (topic, sort_by = "created_at", order = "desc") => {
   if (!validOrderValues.includes(order)) {
     return Promise.reject({ status: 400, message: "Invalid order" });
   }
+
+  if (isNaN(limit)) {
+    return Promise.reject({ status: 400, message: "invalid limit query" });
+  }
+
+  if (isNaN(p)) {
+    return Promise.reject({ status: 400, message: "invalid page query" });
+  }
+
   let queryStr = `SELECT articles.article_id, articles.author,title,topic,articles.created_at,articles.votes,COUNT(comments.article_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id `;
+
+  let total_countQueryStr = `SELECT COUNT(*)::INT FROM articles`;
 
   let queryValues = [];
 
   if (topic) {
     queryValues.push(topic);
 
-    queryStr += `WHERE topic = $1 `;
+    queryStr += ` WHERE topic = $1 `;
+    total_countQueryStr += ` WHERE topic = $1 `;
   }
 
-  queryStr += `GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`;
+  queryStr += `GROUP BY articles.article_id ORDER BY ${sort_by} ${order} LIMIT ${limit} OFFSET ${offset}`;
 
-  return db.query(queryStr, queryValues).then(({ rows: articles }) => {
-    return articles;
-  });
+  return db
+    .query(queryStr, queryValues)
+    .then(({ rows: articles }) => {
+      return Promise.all([
+        articles,
+        db.query(total_countQueryStr, queryValues),
+      ]);
+    })
+    .then(([articles, { rows }]) => {
+      articles.forEach((article) => (article.total_count = rows[0].count));
+      return articles;
+    });
 };
 
 const insertArticle = (author, title, body, topic, requestLength) => {

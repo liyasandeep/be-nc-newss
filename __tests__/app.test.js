@@ -68,17 +68,19 @@ describe("ARTICLE TESTS", () => {
                 comment_count: expect.any(Number),
               })
             );
+            expect(article.created_at).toBeDateString();
           });
         });
     });
 
-    test("200:articles are sorted by created_at(date) in descending order by default", () => {
+    test("200:articles are sorted by created_at(date) in descending order and limit to 10 results by default", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
           const { articles } = body;
           expect(articles).toBeSortedBy("created_at", { descending: true });
+          expect(articles).toHaveLength(10);
         });
     });
     test("200:articles are filtered by the passed query 'topic'", () => {
@@ -87,7 +89,7 @@ describe("ARTICLE TESTS", () => {
         .expect(200)
         .then(({ body }) => {
           const { articles } = body;
-          expect(articles).toHaveLength(11);
+          expect(articles).toHaveLength(10);
           articles.forEach((article) => {
             expect(article.topic).toBe("mitch");
           });
@@ -114,6 +116,27 @@ describe("ARTICLE TESTS", () => {
         });
     });
 
+    test("200:articles are limited by the value of query limit ", () => {
+      return request(app)
+        .get("/api/articles?limit=12")
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles).toHaveLength(12);
+        });
+    });
+
+    test("200:articles are displayed correctly using the page(p) query which specifies the range of enteries to be displayed ", () => {
+      return request(app)
+        .get("/api/articles?p=2&sort_by=author")
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles).toBeInstanceOf(Array);
+          expect(articles).toHaveLength(2);
+          expect(articles[0].author).toBe("butter_bridge");
+        });
+    });
     test("200:articles are retrieved correctly when all the three queries are given", () => {
       return request(app)
         .get("/api/articles?order=asc&sort_by=author&topic=mitch")
@@ -123,6 +146,31 @@ describe("ARTICLE TESTS", () => {
           expect(articles).toBeSortedBy("author", { ascending: true });
           articles.forEach((article) => {
             expect(article.topic).toBe("mitch");
+          });
+        });
+    });
+
+    test("200: articles are retrieved correctly when both page and limit query are given", () => {
+      return request(app)
+        .get("/api/articles?limit=4&p=3")
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles).toBeInstanceOf(Array);
+          expect(articles).toHaveLength(4);
+        });
+    });
+
+    test("200: responds with an article object with total_count property which displays the total number of articles with any filters applied, discounting the limit", () => {
+      return request(app)
+        .get("/api/articles?limit=4&p=2&topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles).toBeInstanceOf(Array);
+          expect(articles).toHaveLength(4);
+          articles.forEach((article) => {
+            expect(article.total_count).toBe(11);
           });
         });
     });
@@ -163,6 +211,26 @@ describe("ARTICLE TESTS", () => {
         .then(({ body }) => {
           const { message } = body;
           expect(message).toBe("Invalid order");
+        });
+    });
+
+    test("400: responds with error when limit query has invalid value(not a valid number)", () => {
+      return request(app)
+        .get("/api/articles?limit=not-a-number")
+        .expect(400)
+        .then(({ body }) => {
+          const { message } = body;
+          expect(message).toBe("invalid limit query");
+        });
+    });
+
+    test("400: responds with error when page query(p) has invalid value(not a valid number)", () => {
+      return request(app)
+        .get("/api/articles?p=not-a-number")
+        .expect(400)
+        .then(({ body }) => {
+          const { message } = body;
+          expect(message).toBe("invalid page query");
         });
     });
   });

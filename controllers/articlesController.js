@@ -32,9 +32,9 @@ const patchArticleById = (req, res, next) => {
     });
 };
 const getArticles = (req, res, next) => {
-  const { sort_by, order, topic } = req.query;
+  const { sort_by, order, topic, limit, p } = req.query;
 
-  const promises = [selectArticles(topic, sort_by, order)];
+  const promises = [selectArticles(topic, sort_by, order, limit, p)];
   if (topic) {
     promises.push(selectTopicByName(topic));
   }
