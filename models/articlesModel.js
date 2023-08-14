@@ -77,7 +77,7 @@ const selectArticles = (
 
   let queryStr = `SELECT articles.article_id, articles.author,title,topic,articles.created_at,articles.votes,COUNT(comments.article_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id `;
 
-  let total_countQueryStr = `SELECT COUNT(*)::INT FROM articles`;
+  let total_countQueryStr = `SELECT COUNT(*)::INT AS total_count FROM articles`;
 
   let queryValues = [];
 
@@ -90,18 +90,22 @@ const selectArticles = (
 
   queryStr += `GROUP BY articles.article_id ORDER BY ${sort_by} ${order} LIMIT ${limit} OFFSET ${offset}`;
 
-  return db
-    .query(queryStr, queryValues)
-    .then(({ rows: articles }) => {
-      return Promise.all([
-        articles,
-        db.query(total_countQueryStr, queryValues),
-      ]);
-    })
-    .then(([articles, { rows }]) => {
-      articles.forEach((article) => (article.total_count = rows[0].count));
+  return Promise.all([
+    db.query(queryStr, queryValues),
+    db.query(total_countQueryStr, queryValues),
+  ]).then(
+    ([
+      { rows: articles },
+      {
+        rows: [{ total_count }],
+      },
+    ]) => {
+      articles.forEach((article) => {
+        article.total_count = total_count;
+      });
       return articles;
-    });
+    }
+  );
 };
 
 const insertArticle = (author, title, body, topic, requestLength) => {
