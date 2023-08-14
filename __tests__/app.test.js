@@ -743,6 +743,31 @@ describe("ARTICLE TESTS", () => {
         });
     });
   });
+
+  describe("DELETE/api/articles/:article_id", () => {
+    test("204:deletes an article by article_id", () => {
+      return request(app).delete("/api/articles/1").expect(204);
+    });
+    test("400:responds with error when article id is inavlid", () => {
+      return request(app)
+        .delete("/api/articles/not-an-id")
+        .expect(400)
+        .then(({ body }) => {
+          const { message } = body;
+          expect(message).toBe("Invalid type");
+        });
+    });
+
+    test("404:responds with error when article id is not in database", () => {
+      return request(app)
+        .delete("/api/articles/99999")
+        .expect(404)
+        .then(({ body }) => {
+          const { message } = body;
+          expect(message).toBe("Article Id not found");
+        });
+    });
+  });
 });
 
 describe("USER TESTS", () => {

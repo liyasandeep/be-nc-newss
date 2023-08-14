@@ -137,9 +137,21 @@ const insertArticle = (author, title, body, topic, requestLength) => {
       return article;
     });
 };
+
+const removeArticleByArticleId = (article_id) => {
+  let queryStr = `DELETE FROM articles WHERE article_id = $1;`;
+
+  return db.query(queryStr, [article_id]).then(({ rowCount }) => {
+    if (rowCount === 0) {
+      return Promise.reject({ status: 404, message: "Article Id not found" });
+    }
+    return;
+  });
+};
 module.exports = {
   selectArticleById,
   updateArticleById,
   selectArticles,
   insertArticle,
+  removeArticleByArticleId,
 };
