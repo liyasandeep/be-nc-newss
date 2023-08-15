@@ -9,9 +9,39 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
+  "POST /api/topics": {
+    "description": "adds topic to database and serves the topic",
+    "queries": [],
+    "exampleSendBody": {
+      "slug": "Gardening",
+      "description": "It's so cool"
+    },
+    "exampleResponse": {
+      "topic": {
+        "slug": "Gardening",
+        "description": "It's so cool"
+      }
+    }
+  },
   "GET /api/articles": {
     "description": "serves an array of all articles",
-    "queries": ["topic", "sort_by", "order"],
+    "queries": ["topic", "sort_by", "order", "limit", "p"],
+    "defaultValues": {
+      "sort_by": "created_at",
+      "order": "desc",
+      "limit": 10,
+      "p": 1
+    },
+    "sort_byGreenList": [
+      "author",
+      "title",
+      "article_id",
+      "topic",
+      "created_at",
+      "votes",
+      "comment_count"
+    ],
+    "orderGreenList": ["asc", "desc"],
     "exampleResponse": {
       "articles": [
         {
@@ -21,9 +51,32 @@
           "topic": "cooking",
           "created_at": 1600277160000,
           "votes": 0,
-          "comment_count": 6
+          "comment_count": 6,
+          "total_count": 12
         }
       ]
+    }
+  },
+  "POST /api/articles": {
+    "description": "adds article to database and serves the article",
+    "queries": [],
+    "exampleRequest": {
+      "author": "grumpy19",
+      "title": "TitleOfArticle",
+      "body": "BodyOfArticle",
+      "Topic": "Topic"
+    },
+    "exampleResponse": {
+      "article": {
+        "author": "grumpy19",
+        "title": "TitleOfArticle",
+        "body": "BodyOfArticle",
+        "Topic": "Topic",
+        "article_id": 1,
+        "created_at": "2020-07-09T20:11:00.000Z",
+        "votes": 0,
+        "comment_count": 0
+      }
     }
   },
 
@@ -38,6 +91,18 @@
           "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/7/78/Mr-Grumpy-3A.PNG/revision/latest?cb=20170707233013"
         }
       ]
+    }
+  },
+
+  "GET /api/users/:username": {
+    "description": "serves one object of matching username",
+    "queries": [],
+    "exampleResponse": {
+      "user": {
+        "username": "grumpy19",
+        "name": "Paul Grump",
+        "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/7/78/Mr-Grumpy-3A.PNG/revision/latest?cb=20170707233013"
+      }
     }
   },
   "GET /api/articles:article_id": {
@@ -78,10 +143,19 @@
       ]
     }
   },
+  "DELETE /api/articles/:article_id": {
+    "description": "deletes article and all comments matching article_id",
+    "queries": [],
+    "exampleResponse": {}
+  },
 
   "GET /api/articles/:article_id/comments": {
     "description": "serves an array of comments for the given article_id,sorted by created_at property in descending order",
-    "queries": [],
+    "queries": ["limit", "p"],
+    "defaultValues": {
+      "limit": 10,
+      "p": 1
+    },
     "exampleResponse": {
       "comments": [
         {
@@ -99,42 +173,11 @@
           "created_at": "2020-09-03 02:06:00",
           "author": "weegembump",
           "body": "Praesentium dolor doloribus sint. Quisquam molestiae dolorum asperiores animi omnis."
-        },
-        {
-          "article_id": 5,
-          "comment_id": 18,
-          "votes": 6,
-          "created_at": "2020-08-15 18:11:00",
-          "author": "jessjelly",
-          "body": " Dicta aut quo unde cupiditate dolorum. Voluptas mollitia exercitationem vel porro dolor. Ea autem est pariatur."
-        },
-        {
-          "article_id": 5,
-          "comment_id": 88,
-          "votes": -3,
-          "created_at": "2020-05-26 16:11:00",
-          "author": "weegembump",
-          "body": "Minus minus sit non fugiat sunt et nostrum aut et. Dignissimos qui nemo quos fuga qui temporibus occaecati aut. Explicabo dolor commodi officia nulla totam inventore."
-        },
-        {
-          "article_id": 5,
-          "comment_id": 149,
-          "votes": 10,
-          "created_at": "2020-05-04 06:15:00",
-          "author": "grumpy19",
-          "body": "Accusamus vel vero aut quaerat quo nihil saepe. Eius quam consequatur explicabo sed est dolor soluta. Corporis enim possimus quo tempore voluptatem id. Sit et modi id ad eum deserunt. Aut voluptatem eum dolor eius. Aperiam ut quo rerum maxime omnis molestiae ipsum quibusdam laboriosam."
-        },
-        {
-          "article_id": 5,
-          "comment_id": 238,
-          "votes": 4,
-          "created_at": "2020-02-12 22:07:00",
-          "author": "happyamy2016",
-          "body": "Aut esse incidunt laborum enim nam voluptas enim deleniti dolores. Neque voluptas voluptatem. Est quia itaque aut est laudantium dolor. Esse vitae eum iste ut mollitia officiis architecto quo autem. Accusamus quod maiores quia incidunt veniam. Rerum adipisci sed quasi labore neque sit rem quam."
         }
       ]
     }
   },
+
   "POST /api/articles/:article_id/comments": {
     "description": "Adds a new comment to an article specified by the article_id and responds with the new comment",
     "queries": [],
@@ -150,8 +193,25 @@
       }
     }
   },
+
   "DELETE /api/comments/:comment_id": {
     "description": "deletes a comment by comment_id",
-    "queries": []
+    "queries": [],
+    "exampleResponse": {}
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description": "updates matching comment vote count and serves updated comment",
+    "queries": [],
+    "exampleSendBody": {
+      "inc_votes": 1
+    },
+    "exampleResponse": {
+      "comment_id": 302,
+      "body": "new comment added",
+      "votes": 1,
+      "author": "grumpy19",
+      "article_id": 2,
+      "created_at": "2020-10-13 14:07:00"
+    }
   }
 }

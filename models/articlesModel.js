@@ -55,6 +55,7 @@ const selectArticles = (
     "created_at",
     "votes",
     "comment_count",
+    "article_id",
   ];
   const validOrderValues = ["asc", "desc"];
 
