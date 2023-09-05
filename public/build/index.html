@@ -52,10 +52,11 @@
         onclick="changeMarkdown('ApiReference', 'general','ApiReference')"
         >Api Reference</a
       >
+      <!-- topics Accordion -->
       <button class="sidebar-item btn">
         Topics <i class="fa fa-caret-down"></i>
       </button>
-      <div id="demoAcc" class="hide">
+      <div id="TopicsAcc" class="hide">
         <a
           class="sidebar-item submenu-item"
           onclick="changeMarkdown('getTopics', 'topics', 'Topics > Get Topics')"
@@ -65,6 +66,38 @@
           class="sidebar-item submenu-item"
           onclick="changeMarkdown('postTopic', 'topics','Topics > Post Topics')"
           >Post Topics</a
+        >
+      </div>
+
+      <!-- Articles Accordion -->
+      <button class="sidebar-item btn">
+        Articles <i class="fa fa-caret-down"></i>
+      </button>
+      <div id="ArticlesAcc" class="hide">
+        <a
+          class="sidebar-item submenu-item"
+          onclick="changeMarkdown('getArticles', 'articles', 'Articles > Get Articles')"
+          >Get Articles
+        </a>
+        <a
+          class="sidebar-item submenu-item"
+          onclick="changeMarkdown('postArticles', 'articles','Articles > Post Articles')"
+          >Post Articles</a
+        >
+        <a
+          class="sidebar-item submenu-item"
+          onclick="changeMarkdown('getArticleById', 'articles','Articles > Get Article by Id')"
+          >Get Article by Id</a
+        >
+        <a
+          class="sidebar-item submenu-item"
+          onclick="changeMarkdown('patchArticleById', 'articles','Articles > Patch Article by Id')"
+          >Patch Article by Id</a
+        >
+        <a
+          class="sidebar-item submenu-item"
+          onclick="changeMarkdown('deleteArticleById', 'articles','Articles > Delete Article by Id')"
+          >Delete Article by Id</a
         >
       </div>
     </div>

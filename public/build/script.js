@@ -2,8 +2,10 @@ const buttons = document.querySelectorAll("button");
 
 buttons.forEach((item, index) => {
   item.addEventListener("click", () => {
-    var x = document.getElementById("demoAcc");
-    console.log(x);
+    let itemText = item.innerText.replace(" ", "");
+
+    let x = document.getElementById(`${itemText}Acc`);
+
     if (x.className.indexOf("show") == -1) {
       x.className = "show";
     } else {
