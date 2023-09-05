@@ -108,3 +108,13 @@ body {
 .hide {
   display: none !important;
 }
+
+.markdown-style {
+  padding: 100px 360px;
+}
+.md {
+  padding: 10px 360px;
+}
+.markdown-style-p {
+  padding: 100px 360px 20px;
+}
