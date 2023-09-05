@@ -16,6 +16,14 @@
       src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"
     ></script>
 
+    <script type="text/javascript">
+      function changeMarkdown(filename, category, path) {
+        document.getElementById(
+          "markdown-container"
+        ).innerHTML = `<p class="markdown-style-p">${path}</p> <zero-md id="test" class="md" src="./docs/${category}/${filename}.md"></zero-md>`;
+      }
+    </script>
+
     <title>Northcoders News API</title>
   </head>
 
