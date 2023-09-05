@@ -41,7 +41,9 @@
       <div class="navbar-content">
         <!-- To show icons include class fa since setting the body font overrides fontawesome font.so set it to fa to call its font properties -->
         <i class="fa fa-solid fa-toggle-off"></i>
-        <a href="#"><i class="fa fa-brands fa-github"></i></a>
+        <a href="#"
+          ><i class="fa fa-brands fa-github" style="color: black"></i
+        ></a>
       </div>
     </nav>
 
@@ -98,6 +100,23 @@
           class="sidebar-item submenu-item"
           onclick="changeMarkdown('deleteArticleById', 'articles','Articles > Delete Article by Id')"
           >Delete Article by Id</a
+        >
+      </div>
+
+      <!-- User Accordion -->
+      <button class="sidebar-item btn">
+        Users <i class="fa fa-caret-down"></i>
+      </button>
+      <div id="UsersAcc" class="hide">
+        <a
+          class="sidebar-item submenu-item"
+          onclick="changeMarkdown('getUsers', 'users', 'Users > Get Users')"
+          >Get Users
+        </a>
+        <a
+          class="sidebar-item submenu-item"
+          onclick="changeMarkdown('getUserByUsername', 'users','Users > Get User by Username')"
+          >Get User by Username</a
         >
       </div>
     </div>
