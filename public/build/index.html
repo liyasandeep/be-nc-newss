@@ -10,7 +10,7 @@
     <!-- fontawesome link -->
 
     <script src="https://use.fontawesome.com/fd647e8365.js"></script>
-
+    <!--  markdown-to-html web component link to load and display an external MD file -->
     <script
       type="module"
       src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"
@@ -36,5 +36,32 @@
         <a href="#"><i class="fa fa-brands fa-github"></i></a>
       </div>
     </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <a
+        class="sidebar-item"
+        onclick="changeMarkdown('ApiReference', 'general','ApiReference')"
+        >Api Reference</a
+      >
+      <button class="sidebar-item btn">
+        Topics <i class="fa fa-caret-down"></i>
+      </button>
+      <div id="demoAcc" class="hide">
+        <a
+          class="sidebar-item submenu-item"
+          onclick="changeMarkdown('getTopics', 'topics', 'Topics > Get Topics')"
+          >Get Topics
+        </a>
+        <a
+          class="sidebar-item submenu-item"
+          onclick="changeMarkdown('postTopic', 'topics','Topics > Post Topics')"
+          >Post Topics</a
+        >
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
   </body>
 </html>
