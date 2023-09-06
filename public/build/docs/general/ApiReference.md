@@ -6,7 +6,7 @@ Below are the list of all currently available endpoints on the [API](https://be-
 
 # Topics
 
-- [GET /api/topics](build/docs/topics/getTopics.md) - List all the current topics in the database.
+- [GET /api/topics](../docs/topics/getTopics.md) - List all the current topics in the database.
 - [POST /api/topics](./docs/topics/postTopic.md) - Adds a new topic to the database.
 
 # Articles
