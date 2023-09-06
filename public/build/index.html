@@ -119,6 +119,32 @@
           >Get User by Username</a
         >
       </div>
+      <!-- Comments Accordion -->
+      <button class="sidebar-item btn">
+        Comments <i class="fa fa-caret-down"></i>
+      </button>
+      <div id="CommentsAcc" class="hide">
+        <a
+          class="sidebar-item submenu-item"
+          onclick="changeMarkdown('getCommentsByArticleId', 'comments', 'Comments > Get Comments By Article Id')"
+          >Get Comments By Article Id
+        </a>
+        <a
+          class="sidebar-item submenu-item"
+          onclick="changeMarkdown('postCommentByArticleId', 'comments','Comments > Post Comment By Article Id')"
+          >Post Comment By Article Id</a
+        >
+        <a
+          class="sidebar-item submenu-item"
+          onclick="changeMarkdown('patchCommentByCommentId', 'comments','Comments > Patch Comment by Id')"
+          >Patch Comment by Id</a
+        >
+        <a
+          class="sidebar-item submenu-item"
+          onclick="changeMarkdown('deleteCommentByCommentId', 'comments','Comments > Delete commentby Id')"
+          >Delete Comment by Id</a
+        >
+      </div>
     </div>
 
     <!-- main content-->
