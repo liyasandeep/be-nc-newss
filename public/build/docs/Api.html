@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--  markdown-to-html web component link to load and display an external MD file -->
+    <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js"></script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"
+    ></script>
+
+    <script type="text/javascript">
+      function changeMarkdown(filename, category, path) {
+        let doc = window.parent.document;
+        doc.getElementById(
+          "markdown-container"
+        ).innerHTML = `<a href="/">Back</a> <zero-md id="test" class="md" src="build/docs/${category}/${filename}.md"></zero-md>`;
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1>Northcoders News API Reference</h1>
+    <p>
+      Welcome to Northcoders News API Reference page! This API provides access
+      to a database for a news aggregation site, which allows users to read
+      articles related to different topics, comment on articles, post new
+      articles, like or dislike comments and more.
+    </p>
+
+    <p>
+      Below are the list of all currently available endpoints on the
+      <a href="https://be-nc-newss.cyclic.app/api">API</a> which can be found on
+      the `/api` endpoint of this site. Feel free to click on the links below or
+      check the side navigation bar to access information about each endpoint
+      with example responses, accepted request bodies and relevant queries(where
+      applicable).
+    </p>
+
+    <h2>Topics</h2>
+    <ul>
+      <li>
+        <a
+          onclick="changeMarkdown('getTopics', 'topics', 'Topics > Get Topics')"
+          >GET /api/topics</a
+        >
+        - List all the current topics in the database.
+      </li>
+      <li>
+        <a
+          onclick="changeMarkdown('postTopic', 'topics','Topics > Post Topics')"
+          >POST /api/topics</a
+        >
+        - Adds a new topic to the database.
+      </li>
+    </ul>
+
+    <h2>Articles</h2>
+    <ul>
+      <li>
+        <a
+          onclick="changeMarkdown('getArticles', 'articles', 'Articles > Get Articles')"
+          >GET /api/articles</a
+        >
+        - List all the current articles in the database.
+      </li>
+      <li>
+        <a
+          onclick="changeMarkdown('postArticles', 'articles','Articles > Post Articles')"
+          >POST /api/articles</a
+        >
+        - Adds a new article to the database.
+      </li>
+
+      <li>
+        <a
+          onclick="changeMarkdown('getArticleById', 'articles','Articles > Get Article by Id')"
+          >GET /api/articles/:article_id</a
+        >
+        - Retrieves the article specified by the ID from the database.
+      </li>
+      <li>
+        <a
+          onclick="changeMarkdown('patchArticleById', 'articles','Articles > Patch Article by Id')"
+          >PATCH /api/articles/:article_id</a
+        >
+        - Update the Specified article's vote count.
+      </li>
+      <li>
+        <a
+          onclick="changeMarkdown('deleteArticleById', 'articles','Articles > Delete Article by Id')"
+          >DELETE /api/articles/:article_id</a
+        >
+        - Deletes the article specified by the ID from the database.
+      </li>
+    </ul>
+
+    <h2>Users</h2>
+    <ul>
+      <li>
+        <a onclick="changeMarkdown('getUsers', 'users', 'Users > Get Users')"
+          >GET /api/users</a
+        >
+        - List all the current users in the database.
+      </li>
+      <li>
+        <a
+          onclick="changeMarkdown('getUserByUsername', 'users','Users > Get User by Username')"
+          >GET /api/users/:username</a
+        >
+        - Retrieves the specific users information from the database.
+      </li>
+    </ul>
+    <h2>Comments</h2>
+    <ul>
+      <li>
+        <a
+          onclick="changeMarkdown('getCommentsByArticleId', 'comments', 'Comments > Get Comments By Article Id')"
+          >GET /api/articles/:article_id/comments</a
+        >
+        - Retrieves all the comments for the specified article.
+      </li>
+      <li>
+        <a
+          onclick="changeMarkdown('postCommentByArticleId', 'comments','Comments > Post Comment By Article Id')"
+          >POST /api/articles/:article_id/comments</a
+        >
+        - Adds a new comment for the specified article.
+      </li>
+      <li>
+        <a
+          onclick="changeMarkdown('patchCommentByCommentId', 'comments','Comments > Patch Comment by Id')"
+          >PATCH /api/comments/:comment_id
+        </a>
+        - Update the Specified comment's vote count.
+      </li>
+      <li>
+        <a
+          onclick="changeMarkdown('deleteCommentByCommentId', 'comments','Comments > Delete commentby Id')"
+          >DELETE /api/comments/:comment_id</a
+        >
+        - Deletes the comment specified by the ID from the database.
+      </li>
+    </ul>
+  </body>
+</html>
