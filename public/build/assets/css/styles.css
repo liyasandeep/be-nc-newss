@@ -77,10 +77,10 @@ body {
   top: 0;
   left: 0;
   height: 100%;
-  width: 400px;
+  width: 375px;
   position: fixed !important;
   z-index: 100;
-  padding: 90px 15px 90px 75px;
+  padding: 90px 15px 90px 55px;
   overflow: auto;
   /* box-shadow: 0 0 1px var(--grey-color-light); */
   /* transition: all 0.5s ease; */
@@ -102,14 +102,19 @@ body {
 .submenu-item {
   padding: 10px 45px;
 }
+.icon {
+  padding-left: 10px;
+}
 .show {
   display: block;
 }
 .hide {
   display: none !important;
 }
-
-.markdown-style {
+#markdown-container {
+  padding: 100px 400px;
+}
+/* .markdown-style {
   padding: 100px 380px;
 }
 .md {
@@ -117,4 +122,4 @@ body {
 }
 .markdown-style-p {
   padding: 100px 380px 20px;
-}
+} */
