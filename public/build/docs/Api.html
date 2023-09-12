@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <link rel="stylesheet" href="../assets/css/styles.css" />
     <!--  markdown-to-html web component link to load and display an external MD file -->
     <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js"></script>
     <script
@@ -23,25 +23,25 @@
   </head>
 
   <body>
-    <h1>Northcoders News API Reference</h1>
-    <p>
+    <h1 class="shadow">Northcoders News API Reference</h1>
+    <p class="info">
       Welcome to Northcoders News API Reference page! This API provides access
       to a database for a news aggregation site, which allows users to read
       articles related to different topics, comment on articles, post new
       articles, like or dislike comments and more.
     </p>
 
-    <p>
+    <p class="info">
       Below are the list of all currently available endpoints on the
       <a href="https://be-nc-newss.cyclic.app/api">API</a> which can be found on
-      the `/api` endpoint of this site. Feel free to click on the links below or
-      check the side navigation bar to access information about each endpoint
-      with example responses, accepted request bodies and relevant queries(where
-      applicable).
+      the <span class="reference"> /api </span> endpoint of this site. Feel free
+      to click on the links below or check the side navigation bar to access
+      information about each endpoint with example responses, accepted request
+      bodies and relevant queries(where applicable).
     </p>
 
-    <h2>Topics</h2>
-    <ul>
+    <h2 class="shadow">Topics</h2>
+    <ul class="list">
       <li>
         <a
           onclick="changeMarkdown('getTopics', 'topics', 'Topics > Get Topics')"
@@ -58,8 +58,8 @@
       </li>
     </ul>
 
-    <h2>Articles</h2>
-    <ul>
+    <h2 class="shadow">Articles</h2>
+    <ul class="list">
       <li>
         <a
           onclick="changeMarkdown('getArticles', 'articles', 'Articles > Get Articles')"
@@ -98,8 +98,8 @@
       </li>
     </ul>
 
-    <h2>Users</h2>
-    <ul>
+    <h2 class="shadow">Users</h2>
+    <ul class="list">
       <li>
         <a onclick="changeMarkdown('getUsers', 'users', 'Users > Get Users')"
           >GET /api/users</a
@@ -114,8 +114,8 @@
         - Retrieves the specific users information from the database.
       </li>
     </ul>
-    <h2>Comments</h2>
-    <ul>
+    <h2 class="shadow">Comments</h2>
+    <ul class="list">
       <li>
         <a
           onclick="changeMarkdown('getCommentsByArticleId', 'comments', 'Comments > Get Comments By Article Id')"
