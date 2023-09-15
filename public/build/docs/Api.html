@@ -15,9 +15,23 @@
     <script type="text/javascript">
       function changeMarkdown(filename, category, path) {
         let doc = window.parent.document;
-        doc.getElementById(
-          "markdown-container"
-        ).innerHTML = `<a href="/">Back</a> <zero-md id="test" class="md" src="build/docs/${category}/${filename}.md"></zero-md>`;
+        if (filename === "apiEndpoints") {
+          fetch("https://be-nc-newss.cyclic.app/api")
+            .then((response) => response.json())
+            .then((value) => {
+              doc.getElementById(
+                "markdown-container"
+              ).innerHTML = `<a href="/" style="padding:10px 0">Back</a><pre id="json" style="padding:10px 0" >${JSON.stringify(
+                value,
+                null,
+                4
+              )}</pre>`;
+            });
+        } else {
+          doc.getElementById(
+            "markdown-container"
+          ).innerHTML = `<a href="/">Back</a> <zero-md id="test" class="md" src="build/docs/${category}/${filename}.md"></zero-md>`;
+        }
       }
     </script>
   </head>
@@ -33,11 +47,13 @@
 
     <p class="info">
       Below are the list of all currently available endpoints on the
-      <a href="https://be-nc-newss.cyclic.app/api">API</a> which can be found on
-      the <span class="reference"> /api </span> endpoint of this site. Feel free
-      to click on the links below or check the side navigation bar to access
-      information about each endpoint with example responses, accepted request
-      bodies and relevant queries(where applicable).
+      <a onclick="changeMarkdown('apiEndpoints','API')" style="color: #0366d6"
+        >API</a
+      >
+      which can be found on the <span class="reference"> /api </span> endpoint
+      of this site. Feel free to click on the links below or check the side
+      navigation bar to access information about each endpoint with example
+      responses, accepted request bodies and relevant queries(where applicable).
     </p>
 
     <h2 class="shadow">Topics</h2>
