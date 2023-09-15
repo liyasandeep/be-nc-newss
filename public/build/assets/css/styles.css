@@ -21,6 +21,7 @@ body {
   justify-content: center;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  line-height: 1.6;
 }
 
 .navbar {
@@ -32,7 +33,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px 100px;
+  padding: 15px 75px;
   z-index: 1000;
   box-shadow: 0 0 2px var(--grey-color-light);
 }
@@ -77,10 +78,10 @@ body {
   top: 0;
   left: 0;
   height: 100%;
-  width: 400px;
+  width: 375px;
   position: fixed !important;
   z-index: 100;
-  padding: 90px 15px 90px 75px;
+  padding: 90px 15px 90px 55px;
   overflow: auto;
   /* box-shadow: 0 0 1px var(--grey-color-light); */
   /* transition: all 0.5s ease; */
@@ -102,19 +103,46 @@ body {
 .submenu-item {
   padding: 10px 45px;
 }
+.icon {
+  padding-left: 10px;
+}
 .show {
   display: block;
 }
 .hide {
   display: none !important;
 }
-
-.markdown-style {
-  padding: 100px 380px;
+#markdown-container {
+  padding: 100px 400px;
 }
 .md {
-  padding: 10px 380px;
+  padding: 20px 0px;
 }
-.markdown-style-p {
-  padding: 100px 380px 20px;
+
+/* Api.html css */
+
+.reference {
+  background-color: rgba(228, 235, 228, 0.952);
+  display: inline-block;
+  padding: 3px 5px;
+  font: 12px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  color: #444d56;
+  vertical-align: middle;
+  border-radius: 3px;
+}
+.shadow {
+  border-bottom: 1px solid #e1e4e8 !important;
+  padding: 15px 0px;
+}
+.info {
+  padding: 15px 0 0;
+}
+.list {
+  list-style-position: inside;
+  padding: 15px 0 0;
+}
+ul a {
+  color: #0366d6;
+  text-decoration: none;
+  cursor: pointer;
 }
